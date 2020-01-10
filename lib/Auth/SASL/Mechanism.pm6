@@ -36,7 +36,7 @@ role Mechanism {
 
 role Mechanism::Client does Mechanism {
     method start-client(::?CLASS:D: --> Str:D) { ... }
-    method step-client(::?CLASS:D: --> Str:D) { }
+    method step-client(::?CLASS:D: $ --> Str:D) { }
 }
 
 role Mechanism::Server does Mechanism {

@@ -40,7 +40,7 @@ multi method new-client(
         take ::($mech-pkg);
     }
 
-    die "No working SASL authentication mechanisms found:\n$last-err.gist.indent(4)"
+    die "No working SASL authentication mechanisms found: $last-err.exception()"
         unless $mech-pkgs;
 
     $mech-pkgs.first.new(:$parent, :$service, :$host, :need-step);
