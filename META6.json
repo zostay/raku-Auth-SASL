@@ -1,34 +1,41 @@
 {
-  "license": "Artistic-2.0",
-  "description": "Simple Authentication and Security Layer",
-  "tags": [
-
+  "resources": [
   ],
-  "support": {
-    "source": null
-  },
-  "meta-version": "0",
   "test-depends": [
     "Test",
     "Test::META"
   ],
   "build-depends": [
-
+  ],
+  "auth": null,
+  "license": "Artistic-2.0",
+  "tags": [
+  ],
+  "description": "Simple Authentication and Security Layer",
+  "name": "Auth::SASL",
+  "perl": "6.c",
+  "support": {
+    "source": null
+  },
+  "meta-version": "0",
+  "depends": [
   ],
   "authors": [
     "Sterling Hanenkamp <hanenkamp@cpan.org>"
   ],
   "source-url": "git://github.com/zostay/raku-Auth-SASL.git",
-  "resources": [
-
-  ],
   "provides": {
+    "Auth::SASL::Raku::DIGEST-MD5": "lib/Auth/SASL/Raku/DIGEST-MD5.pm6",
+    "Auth::SASL::Raku::LOGIN": "lib/Auth/SASL/Raku/LOGIN.pm6",
+    "Auth::SASL::Raku::PLAIN": "lib/Auth/SASL/Raku/PLAIN.pm6",
+    "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
+    "Auth::SASL::API": "lib/Auth/SASL/API.pm6",
+    "Auth::SASL": "lib/Auth/SASL.pm6",
+    "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
+    "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",
+    "Auth::SASL::Raku::CRAM-MD5": "lib/Auth/SASL/Raku/CRAM-MD5.pm6",
+    "Auth::SASL::Raku::ANONYMOUS": "lib/Auth/SASL/Raku/ANONYMOUS.pm6",
+    "Auth::SASL::Raku::Mechanism": "lib/Auth/SASL/Raku/Mechanism.pm6"
   },
-  "depends": [
-
-  ],
-  "version": "0.0.0",
-  "auth": null,
-  "name": "Auth::SASL",
-  "perl": "6.c"
+  "version": "0.0.1"
 }

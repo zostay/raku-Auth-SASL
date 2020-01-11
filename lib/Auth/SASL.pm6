@@ -2,7 +2,7 @@ use v6;
 
 use Auth::SASL::API;
 
-unit class Auth::SASL:ver<0.0.0>:auth<github:zostay> does Auth::SASL::API;
+unit class Auth::SASL:ver<0.0.1>:auth<github:zostay> does Auth::SASL::API;
 
 use Auth::SASL::Factory;
 use Auth::SASL::Mechanism;
