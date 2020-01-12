@@ -7,7 +7,6 @@ unit class Auth::SASL::Raku::ANONYMOUS does Auth::SASL::Raku::Mechanism does Aut
 
 constant $SECURITY-FLAGS = <nonplaintext>.Set;
 
-method order(::?CLASS: --> Int:D) { 0 }
 method mechanism(::?CLASS: --> Str:D) { 'ANONYMOUS' }
 
 method mechanism-security-flags(::?CLASS: --> Set:D) {

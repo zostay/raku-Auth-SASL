@@ -8,7 +8,6 @@ unit class Auth::SASL::Raku::PLAIN does Auth::SASL::Raku::Mechanism does Auth::S
 constant $SECURITY-FLAGS = <noanonymous>.Set;
 constant @TOKENS = <authname user pass>;
 
-method order(::?CLASS: --> Int:D) { 1 }
 method mechanism(::?CLASS: --> Str:D) { 'PLAIN' }
 
 method mechanism-security-flags(::?CLASS: --> Set:D) {

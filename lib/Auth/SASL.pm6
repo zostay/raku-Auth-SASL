@@ -8,14 +8,21 @@ use Auth::SASL::Factory;
 use Auth::SASL::Mechanism;
 use Auth::SASL::Raku;
 
-has Set $.mechanism is required;
+has Mix $.mechanism is required;
 has Callable %.callback;
 has Bool $.debug = False;
 has Auth::SASL::Factory $!factory = Auth::SASL::Raku;
-has Auth::SASL::Mechanism $!conn;
+
+our sub split-mechanisms(Str:D $mechanisms --> Mix:D) {
+    $mechanisms.comb(/ <[- \w]>+ /).Mix;
+}
+
+our sub split-security-flags(Str:D $security-flags --> Set:D) {
+    $security-flags.lc.comb(/\w+/).Set;
+}
 
 multi method new(::?CLASS:U:
-    Set :$mechanism!,
+    Mix :$mechanism!,
     :callback(%cb),
     :$debug = False,
     --> Auth::SASL:D
@@ -38,17 +45,30 @@ multi method new(::?CLASS:U:
     :$debug = False,
     --> ::?CLASS:D
 ) {
-    my $mechanism = $mech-str.comb(/ <[- \w]>+ /).Set;
+    my $mechanism = split-mechanisms($mech-str);
     self.new: :$mechanism, :%callback, :$debug;
 }
 
-method prepare-client(::?CLASS:D: |c) {
-    $!conn = Auth::SASL::Raku.new-client(self, |c);
+multi method prepare-client(
+    Str :$service,
+    Str :$host,
+    Str :$security-flags!,
+    --> Auth::SASL::Mechanism:D
+) {
+    $!factory.new-client(self, :$service, :$host,
+        security-flags => split-security-flags($security-flags),
+    );
+}
+
+multi method prepare-client(::?CLASS:D:
+    Str :$service = '',
+    Str :$host = '',
+    Set :$security-flags = Set.new,
+    --> Auth::SASL::Mechanism:D
+) {
+    $!factory.new-client(self, :$service, :$host, :$security-flags);
 }
 
 method prepare-server(::?CLASS:D: |c) {
-    $!conn = Auth::SASL::Raku.new-server(self, |c);
+    $!factory.new-server(self, |c);
 }
-
-method initial(::?CLASS:D:) { self.prepare-client.client-start }
-method challenge(::?CLASS:D: Str $challenge?) { $!conn.client-step($challenge) }
