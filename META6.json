@@ -1,37 +1,43 @@
 {
+  "version": "0.1.0",
+  "authors": [
+    "Sterling Hanenkamp <hanenkamp@cpan.org>"
+  ],
+  "perl": "6.c",
   "resources": [
+    
   ],
   "test-depends": [
     "Test",
     "Test::META"
   ],
-  "build-depends": [
+  "tags": [
+    
   ],
+  "provides": {
+    "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
+    "X::Auth::SASL": "lib/X/Auth/SASL.pm6",
+    "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",
+    "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
+    "Auth::SASL": "lib/Auth/SASL.pm6",
+    "Auth::SASL::Raku::Mechanism": "lib/Auth/SASL/Raku/Mechanism.pm6",
+    "Auth::SASL::Raku::Plain": "lib/Auth/SASL/Raku/Plain.pm6",
+    "Auth::SASL::Session": "lib/Auth/SASL/Session.pm6",
+    "Auth::SASL::Raku::Anonymous": "lib/Auth/SASL/Raku/Anonymous.pm6"
+  },
   "auth": null,
   "license": "Artistic-2.0",
-  "tags": [
-  ],
-  "description": "Simple Authentication and Security Layer",
-  "name": "Auth::SASL",
-  "perl": "6.c",
   "support": {
     "source": null
   },
-  "meta-version": "0",
-  "depends": [
-  ],
-  "authors": [
-    "Sterling Hanenkamp <hanenkamp@cpan.org>"
+  "description": "Simple Authentication and Security Layer",
+  "build-depends": [
+    
   ],
   "source-url": "git://github.com/zostay/raku-Auth-SASL.git",
-  "provides": {
-    "Auth::SASL::Raku::PLAIN": "lib/Auth/SASL/Raku/PLAIN.pm6",
-    "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
-    "Auth::SASL": "lib/Auth/SASL.pm6",
-    "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
-    "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",
-    "Auth::SASL::Raku::ANONYMOUS": "lib/Auth/SASL/Raku/ANONYMOUS.pm6",
-    "Auth::SASL::Raku::Mechanism": "lib/Auth/SASL/Raku/Mechanism.pm6"
-  },
-  "version": "0.0.1"
+  "meta-version": "0",
+  "depends": [
+    
+  ],
+  "name": "Auth::SASL"
 }

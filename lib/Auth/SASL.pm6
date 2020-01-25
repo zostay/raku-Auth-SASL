@@ -1,6 +1,6 @@
 use v6;
 
-unit class Auth::SASL:ver<0.0.1>:auth<github:zostay>;
+unit class Auth::SASL:ver<0.1.0>:auth<github:zostay>;
 
 use Auth::SASL::Factory;
 use Auth::SASL::Mechanism;
