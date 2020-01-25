@@ -22,3 +22,19 @@ method step-client(::?CLASS:D:
     $session.state('step', :default(0)) = 1;
     $session.get-property('authname');
 }
+
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Raku::Anonymous - pure-Raku implementation of ANONYMOUS authentication
+
+=head1 DESCRIPTION
+
+Provides PLAIN SASL authentication. This mechanism just sends the name the user is claiming to be without making any attempt to prove the claim.
+
+=head1 PROPERTIES
+
+=item C<authname>: This property contains the name the user is claiming to be.
+
+=end pod
