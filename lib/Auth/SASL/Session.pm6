@@ -1,12 +1,6 @@
 use v6;
 
-class X::Auth::SASL::Property {
-    has Str $.property is required;
-
-    method message(--> Str:D) {
-        "unable to retrieve authentication property $.property"
-    }
-}
+use X::Auth::SASL;
 
 class Auth::SASL::Session::State { ... }
 
