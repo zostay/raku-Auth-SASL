@@ -141,6 +141,10 @@ Auth::SASL - Simple Authentication Security Layer
 
 SASL stands for Simple Authentication and Security Layer. It is really just a means of exchanging authentication strings with a service. This library implements the client-side interaction for SASL. SASL itself is complicated only in the fact that it provides a means of exchanging authentication strings, but without specifying the protocol-specific details. Therefore, to use this module for a given protocol, any encoding, error handling, or other details must be implemented by the application developer.
 
+This API is designed to work in a very modular way. This class, C<Auth::SASL>, is designed to operate as the front-end. As long as you are just making use of this module distribution to implement a SASL protocol for a client service, such as SMTP, IMAP, or LDAP, this class will provide most of what you need.
+
+The factory objects are used to find and build mechanism objects. Mechanism objects provide handling to implement each kind of SASL authentication mechanism. The session objects provide the information about the identity that is being authenticated.
+
 =head1 METHODS
 
 =head2 method new
@@ -158,6 +162,35 @@ Constructs an C<Auth::SASL> front-end. Both arguments are optional. The C<$facto
     multi method begin-session(Auth::SASL:D: Auth::SASL::Session $session)
     multi method begin-session(Auth::SASL:D: :%data, :&callback)
 
-Est
+Starts a new session. The session provides information about the identity being authenticated.
+
+For simple cases, you can provide C<%data> directly. These will be simple key/value pairs that provide the authentication details. The keys required will vary by the mechanisms involved.
+
+For more complex cases you can provide a C<&callback>, this will be a L<Callable> routine that will be called each time a mechanism object requires a property. The callback must provide a signature compatible with:
+
+    sub (Str:D $property-name, Str:D :$service, Str:D :$host --> Str)
+
+It should always return defined string. If it does not and the authentication method depends on that value,  authentication mechansim will fail with an L<X::Auth::SASL::Property> exception.
+
+Finally, you can provide an object implementing L<Auth::SASL::Session>.
+
+=head2 method end-session
+
+    method end-session(Auth::SASL:D:)
+
+Clears the session. The front-end will not work until a new session is started by calling L<.begin-session|#method begin-session>.
+
+=head2 method attempt-mechanisms
+
+    multi method attempt-mechanisms(Auth::SASL:D: Str:D $mechanisms, Str:D :$service = '', Str:D :$host = '' --> Seq:D)
+    multi method attempt-mechanisms(Auth::SASL:D: Mixy:D $mechanisms, Str:D :$service = '', Str:D :$host = '' --> Seq:D)
+
+Once a session has been established, this method may be called to itereate over potential authentication mechanisms. The C<$mechanisms> should be set to the list of mechanisms the server has reported as supporting. The factory will then use this and the list of mechanisms it supports to select the mechanisms to attempt. The L<Seq> returned will allow you to iterate through 0 or more L<Auth::SASL::Mechanism::WorkingClient> objects to use for authentication. If none are returned, then there are no compatible mechanisms between client and server.
+
+If C<$mechanisms> is passed as a string, it may either be a single mechanism name, e.g., C<PLAIN>, or it it can be a space separated list of mechanism names, e.g., C<PLAIN ANONYMOUS>. The factory object will determine which mechanisms are most preferable in this case.
+
+If C<$mechanisms> is passed as a L<Mixy> object, such as a L<Mix> or L<MixHash>, the factory can use the score assigned to each key in the L<Mixy> object to reorder the mechanisms and go in a different order.
+
+The C<$service> and C<$host> parameters are optional and are used to allow a single session to connect to multiple services safely and even concurrently, so long as only a particular mechanism is permitted to make its attempt on a given C<$service> and C<$host> concurrently. The C<$service> and C<$host> parameters can also be used to allow a session to have multiple configurations for a given identity for different service/host combinations.
 
 =end pod
