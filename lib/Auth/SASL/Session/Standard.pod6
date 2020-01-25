@@ -1,0 +1,43 @@
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Session::Standard - a standard session implementation
+
+=head1 DESCRIPTION
+
+This is the session object that L<Auth::SASL> will construct if no other session is provided.
+
+=head1 METHODS
+
+=head1 method new
+
+    method new(:%data, :&callback --> Auth::SASL::Session::Standard:D)
+
+This construct a new session object. It provides two attributes, one for simple properties and another for more complex situations.
+
+The simple properties may be set via the C<%data> parameter. The keys and values must both be strings.
+
+If you have more complex needs, you may pass a C<&callback> parameter. The callback must have a signature compatible with the following call:
+
+    sub (Str:D $name, Str:D :$service, Str:D :$host --> Str)
+
+=head1 method session-property
+
+    method session-property(Str:D $name, Str:D :$service, Str:D :$host --> Str)
+
+This returns the value of the property given by C<$name>. It will first check to see if C<$name> exists as a key in C<%data> and return that if it does. It will then try to call C<&callback> if a callback has been defined and return whatever the callback returns.
+
+If neither kind of property is found, it will return a L<Str> type object.
+
+=head1 method set-property
+
+    method set-property(Str:D $name, Str:D $value)
+
+This will set a simple property in the C<%data>. This is intended to provide an alternate way to use the class:
+
+    my Auth::SASL::Session::Standard $session .= new;
+    $session.set-property("user", "steve");
+    $session.set-property("pass", "secret");
+
+=end pod

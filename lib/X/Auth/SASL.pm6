@@ -51,6 +51,6 @@ This should be thrown by L<Auth::SASL::Factory> objects if no SASL mechanism can
         has Str $.property is required;
     }
 
-This will be thrown by L<Auth::SASL::Session> when a property is fetched during SASL authentication, but the value for that property is not defined.
+This will be returned as a failure by L<Auth::SASL::Session> when a property is fetched during SASL authentication, but the value for that property is not defined.
 
 =end pod

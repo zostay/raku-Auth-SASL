@@ -1,0 +1,75 @@
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Session::State - a pad for tracking the state of a mechanism
+
+=head1 SYNOPSIS
+
+    use Auth::SASL::Mechanism;
+
+    class MyMechanism does Auth::SASL::Mechanism::Client {
+        method mechanism(--> Str:D) { "MY-MECHANISM" }
+
+        method status-client(
+            Auth::SASL::Session::State $session,
+            --> Auth::SASL::Status
+        ) {
+            $session.state('done', :default(False)) ?? Auth::SASL::Okay !! Auth::SASL::MoreSteps
+        }
+
+        method step-client(
+            Auth::SASL::Session::State $session,
+            Str $challenge,
+            --> Str:D
+        ) {
+            $session.state('done') = True;
+            join "\t",
+                $session.get-property('user'),
+                $session.get-property('pass'),
+                ;
+        }
+    }
+
+=head1 DESCRIPTION
+
+This class provides tooling that allows a mechanism handler to track its state as it operates. You should never construct this object directly, but instead get one by calling the L<.mechanism-state method|Auth::SASL::Session#method mechanism-state> on a C<Auth::SASL::Session>.
+
+=head1 METHODS
+
+=head2 method service
+
+    method service(--> Str:D)
+
+This returns the service name that was set for the state during construction. Defaults to an empty string.
+
+=head2 method host
+
+    method host(--> Str:D)
+
+This returns teh host name that was set for the state during construction. Defaults to an empty string.
+
+=head2 method state
+
+    method state(Str:D $var, :$default --> Any) is rw
+
+Reads or writes the state of a single state variable. The name of the variable is C<$var>. The caller may optionally specify a C<$default>, which will be used to set the value of C<$var> if the current value is undefined.
+
+=head2 method clear
+
+    method clear()
+
+This clears all state stored in the object.
+
+=head2 method get-property
+
+    multi method get-property(Str:D $name --> Str:D)
+    multi method get-property(@names --> Str:D)
+
+This returns the named property for the state or a L<X::Auth::SASL::Property failure|X::Auth::SASL#class X::Auth::SASL::Property> if the property is not defined.
+
+Calling the single C<$name> version will return the value of that named property or failure.
+
+Calling the array C<@names> version will try each name in turn until a defined property is found. If no such property is found, the failure is returned.
+
+=end pod
