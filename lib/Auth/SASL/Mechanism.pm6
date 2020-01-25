@@ -67,3 +67,17 @@ role Mechanism::Server does Mechanism {
     method status-server(::?CLASS:D: --> Status:D) { ... }
     method step-server(::CLASS:D: --> Str:D) { }
 }
+
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Mechanism - role all SASL mechanisms implement
+
+=head1 DESCRIPTION
+
+This is a very abstact class that all SASL mechanism handlers must implement.
+
+See L<Auth::SASL::Mechanism::Client> for a full description on implementing a SASL client mechanism.
+
+=end pod

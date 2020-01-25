@@ -1,0 +1,79 @@
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Mechanism::Client - client mechanisms must implement this role
+
+=head1 SYNOPSIS
+
+    use Auth::SASL::Mechanism;
+
+    class MyMechanism does Auth::SASL::Mechanism::Client {
+        method mechanism(--> Str:D) { "MY-MECHANISM" }
+
+        method status-client(
+            Auth::SASL::Session::State $session,
+            --> Auth::SASL::Status
+        ) {
+            $session.state('done', :default(False)) ?? Auth::SASL::Okay !! Auth::SASL::MoreSteps
+        }
+
+        method step-client(
+            Auth::SASL::Session::State $session,
+            Str $challenge,
+            --> Str:D
+        ) {
+            $session.state('done') = True;
+            join "\t",
+                $session.get-property('user'),
+                $session.get-property('pass'),
+                ;
+        }
+    }
+
+=head1 DESCRIPTION
+
+This role must be implemented by any class that is providing a SASL mechanism handler. The L<.status-client|#method status-client> and L<.step-client|#method step-client> methods must be implemented to have a functional handler. The L<.begin-client|#method begin-client> can be implemented if there is some special startup setup that needs to be performed for the mechanism to work prior to the first challenge (for example, setting up a random seed, generating initial values for hashing algorithms, etc.).
+
+=head1 REQUIRED METHODS
+
+These methods must be defined by any class implementing this role.
+
+=head2 method mechanism
+
+    method mechanism(--> Str:D)
+
+This returns the string name for the mechanism being implemented.
+
+=head2 method status-client
+
+    method status-client(
+        Auth::SASL::Session::State:D $session,
+        --> Auth::SASL::Status
+    )
+
+This method should return C<Auth::Status::MoreSteps> before L<.step-client|#method step-client> has been called for the first time. It should return C<Auth::Status::Okay> to notify the caller that C<.step-client> should not be called anymore.
+
+=head2 method step-client
+
+    method step-client(
+        Auth::SASL::Session::State:D $session,
+        Str:D $challenge,
+        --> Str:D
+    )
+
+This method will be called at least once for each call to L<.begin-client|#method begin-client> and should continue to be called until L<.status-client|#method status-client> returns C<Auth::SASL::Okay>.
+
+=head1 PROVIDED METHODS
+
+These methods are provided by the role and may be overridden if needed.
+
+=head2 method begin-client
+
+    method begin-client(
+        Auth::SASL::Session::State:D $session,
+    )
+
+This method will be called before this mechanism is run each time on a given C<$session>. As provided, this method calls L<$session.clear|Auth::SASL::Session::State|#method clear> to restore the mechanism session state to a pristine condition.
+
+=end pod

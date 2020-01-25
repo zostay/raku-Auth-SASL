@@ -1,0 +1,84 @@
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Mechansim::WorkingClient - a helper to bind mechanisms to sessions
+
+=head1 SYNOPSIS
+
+    use Auth::SASL;
+
+    sub auth(--> Bool) {
+        my Auth::SASL $sasl .= new;
+        $sasl.begin-session;
+
+        for $sasl.attempt-mechanisms("PLAIN ANONYMOUS") -> Auth::SASL::Mechanism::WorkingClient $mech {
+            my $status;
+            my $challenge = '';
+            while $mech.is-ongoing {
+                send-sasl($mech.step($challenge));
+                ($status, $challenge) = $mech.recv-sasl;
+
+                die "unable to authenticate"
+                    unless sasl-ok($status);
+
+                return True if sasl-complete($status);
+            }
+        }
+
+        return False;
+    }
+
+=head1 DESCRIPTION
+
+This is a wrapper that simplifies the interface to L<Auth::SASL::Mechanism> objects while also tying them to a specific L<Auth::SASL::Session::State>. This object should not be constructed directly, but is provided through the L<Auth::SASL> front-end via the L<.attempt-mechanisms|Auth::SASL#method attempt-mechanisms> method.
+
+=head1 METHODS
+
+=head2 method session
+
+    method session(--> Auth::SASL::Session::State:D)
+
+Returns the L<Auth::SASL::Session::State> object being used for this particular SASL authentication attempt.
+
+=head2 method mechanism
+
+    method mechanism(--> Str:D)
+
+Returns the string name of the mechanism being used.
+
+=head2 method status
+
+    method status(--> Auth::SASL::Status:D)
+
+Returns the current state of the mechanism session. If this returns C<Auth::SASL::Okay>, the L<.step method|#method step> should not be called again. If this returns C<Auth::SASL::MoreSteps>, the C<.step> method should be called at least one more time.
+
+Failing to follow the advice of the status for the mechanism by either not calling C<.step> enough or calling it too many times will lead problems for your SASL authentication.
+
+=head2 method is-complete
+
+    method is-complete(--> Bool:D)
+
+This returns C<True> if and only if calling the L<.status method|#method status> would return C<Auth::SASL::Okay>.
+
+=head2 method is-ongoing
+
+    method is-ongoing(--> Bool:D)
+
+This returns C<True> if and only if calling the L<.status method|#method status> would return C<Auth::SASL::MoreSteps>.
+
+=head2 method begin
+
+    method begin()
+
+This method calls the L<.begin-client method|Auth::SASL::Mechanism::Client#method begin-client> on the underlying mechanism. You probably will never need to call it.
+
+However, it should be called any time this mechanism session is going to be re-used. The L<.attempt-mechanisms method|Auth::SASL#method attempt-mechanisms> calls it automatically prior to returning the mechanism session, so there is no need to call it unless you will reuse the same mechanism session again without calling that method.
+
+=head2 method step
+
+    method step(Str:D $challenge = '' --> Str:D)
+
+This method calls the L<.step-client method|Auth::SASL::Mechanism::Client#method step-client> of the underlying mechanism. The C<$challenge> should be the empty string for the first call and be the string containing the challenge for every subsequent call. The string returned is the one the SASL mechanism needs to send to the server for the next step of authentication.
+
+=end pod
