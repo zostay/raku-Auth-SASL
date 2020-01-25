@@ -35,3 +35,41 @@ method new-client(::?CLASS:D:
 method list-mechanisms(::?CLASS:D: --> Seq:D) {
     @!supported-mechanisms».mechanism;
 }
+
+=begin pod
+
+=head1 NAME
+
+Auth::SASL::Raku - factory for pure-Raku mechanisms
+
+=head1 SYNOPSIS
+
+    use Auth::SASL;
+    use Auth::SASL::Raku;
+    use Auth::SASL::Raku::Plain;
+
+    # Customize Auth::SASL::Raku to only support PLAIN
+    my Auth::SASL::Raku $factory .= new(
+        supported-mechanisms = (Auth::SASL::Raku:Plain.new,),
+    );
+
+    my Auth::SASL $sasl .= new(:$factory);
+
+=head1 DESCRIPTION
+
+This is a SASL mechanism factory for pure-Raku implemented SASL mechanisms included with L<Auth::SASL>.
+
+=head1 METHODS
+
+=head2 method new
+
+    method new(Auth::SASL::Raku:U: :@supported-mechanisms --> Auth::SASL::Raku:D)
+
+As of this writing, this factory provides support for the following mechanisms in this order:
+
+    PLAIN
+    ANONYMOUS
+
+You can modify the order or the list of supported mechanisms by passing C<$supported-mechansims> during construction. These must be implementations of L<Auth::SASL::Mechanism>. This could be useful as well if you want to add your own custom mechanism.
+
+=end pod

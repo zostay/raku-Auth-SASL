@@ -199,7 +199,7 @@ Clears the session. The front-end will not work until a new session is started b
     multi method attempt-mechanisms(Auth::SASL:D: Str:D $mechanisms, Str:D :$service = '', Str:D :$host = '' --> Seq:D)
     multi method attempt-mechanisms(Auth::SASL:D: Mixy:D $mechanisms, Str:D :$service = '', Str:D :$host = '' --> Seq:D)
 
-Once a session has been established, this method may be called to itereate over potential authentication mechanisms. The C<$mechanisms> should be set to the list of mechanisms the server has reported as supporting. The factory will then use this and the list of mechanisms it supports to select the mechanisms to attempt. The L<Seq> returned will allow you to iterate through 0 or more L<Auth::SASL::Mechanism::WorkingClient> objects to use for authentication. If none are returned, then there are no compatible mechanisms between client and server.
+Once a session has been established, this method may be called to itereate over potential authentication mechanisms. The C<$mechanisms> should be set to the list of mechanisms the server has reported as supporting. The factory will then use this and the list of mechanisms it supports to select the mechanisms to attempt. The L<Seq> returned will allow you to iterate through 1 or more L<Auth::SASL::Mechanism::WorkingClient> objects to use for authentication. If no compatible mechanism is found, the L<X::Auth::SASL::NotFound> exception will be thrown.
 
 If C<$mechanisms> is passed as a string, it may either be a single mechanism name, e.g., C<PLAIN>, or it it can be a space separated list of mechanism names, e.g., C<PLAIN ANONYMOUS>. The factory object will determine which mechanisms are most preferable in this case.
 
