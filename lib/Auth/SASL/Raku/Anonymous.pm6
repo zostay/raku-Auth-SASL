@@ -31,7 +31,7 @@ Auth::SASL::Raku::Anonymous - pure-Raku implementation of ANONYMOUS authenticati
 
 =head1 DESCRIPTION
 
-Provides PLAIN SASL authentication. This mechanism just sends the name the user is claiming to be without making any attempt to prove the claim.
+Provides ANONYMOUS SASL authentication. This mechanism just sends the name the user is claiming to be without making any attempt to prove the claim.
 
 =head1 PROPERTIES
 
