@@ -49,6 +49,7 @@ multi method attempt-mechanisms(::?CLASS:D:
 ) {
     gather {
         my $open-mechs = $mechanisms.MixHash;
+        my $first = True;
         while $open-mechs {
 
             # Ask the factory for the best mechanism handler
@@ -64,11 +65,24 @@ multi method attempt-mechanisms(::?CLASS:D:
                 ),
             );
 
+            # Only rethrow the exception if this occurs on the first attempt
+            CATCH {
+                when X::Auth::SASL::NotFound {
+                    if $first {
+                        .rethrow;
+                    }
+                    else {
+                        last;
+                    }
+                }
+            }
+
             # Start it
             $working-mech.begin;
 
             # Take it
             take $working-mech;
+            $first--;
 
             # Remove the last picked mech so we do not try it again
             $open-mechs{ $mechanism.mechanism }:delete;
