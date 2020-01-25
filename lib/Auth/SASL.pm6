@@ -6,6 +6,7 @@ use Auth::SASL::Factory;
 use Auth::SASL::Mechanism;
 use Auth::SASL::Raku;
 use Auth::SASL::Session;
+use X::Auth::SASL;
 
 has Auth::SASL::Session $.session;
 has Auth::SASL::Factory $.factory = Auth::SASL::Raku.new;
