@@ -8,7 +8,7 @@ my $sasl = Auth::SASL.new;
 ok $sasl, 'constructed';
 isa-ok $sasl, Auth::SASL;
 
-$sasl.start-session(
+$sasl.begin-session(
     data => %(
         user     => 'zostay',
         pass     => 'oofoof',

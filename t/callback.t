@@ -21,7 +21,7 @@ multi my-callback('authname', :$service, :$host) {
     }
 }
 
-$sasl.start-session(
+$sasl.begin-session(
     data => %(
         user => 'zostay',
     ),
