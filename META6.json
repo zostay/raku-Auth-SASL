@@ -27,7 +27,6 @@
   "provides": {
     "Auth::SASL::Raku::PLAIN": "lib/Auth/SASL/Raku/PLAIN.pm6",
     "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
-    "Auth::SASL::API": "lib/Auth/SASL/API.pm6",
     "Auth::SASL": "lib/Auth/SASL.pm6",
     "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
     "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",

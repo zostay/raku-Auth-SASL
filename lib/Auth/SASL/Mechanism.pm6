@@ -2,11 +2,13 @@ use v6;
 
 unit package Auth::SASL;
 
+use Auth::SASL::Session;
+
 role Mechanism {
     method mechanism(::?CLASS: --> Str:D) { ... }
 }
 
-enum Status <Failure Okay MoreSteps>;
+enum Status <Failed Okay MoreSteps>;
 
 role Mechanism::Client does Mechanism {
     method status-client(::?CLASS:D:
@@ -14,10 +16,8 @@ role Mechanism::Client does Mechanism {
         --> Status:D
     ) { Okay }
 
-    method start-client(::?CLASS:D:
+    method begin-client(::?CLASS:D:
         Auth::SASL::Session::State:D $session,
-        Str:D $challenge,
-        --> Str:D
     ) { $session.clear }
 
     method step-client(::?CLASS:D:
@@ -25,6 +25,42 @@ role Mechanism::Client does Mechanism {
         Str:D $challenge,
         --> Str:D
     ) { }
+}
+
+class Mechanism::WorkingClient {
+    has Auth::SASL::Session::State $.session;
+    has Mechanism::Client $.mechanism;
+
+    method mechanism(::?CLASS:D: --> Str:D) {
+        $!mechanism.mechanism;
+    }
+
+    method status(::?CLASS:D: --> Status:D) {
+        $!mechanism.status-client($!session);
+    }
+
+    method is-complete(::?CLASS:D: --> Bool:D) {
+        $.status == Okay
+    }
+
+    method is-ongoing(::?CLASS:D: --> Bool:D) {
+        $.status == MoreSteps
+    }
+
+    method is-failed(::?CLASS:D: --> Bool:D) {
+        $.status == Failed;
+    }
+
+    method begin(::?CLASS:D:) {
+        $!mechanism.begin-client($!session);
+    }
+
+    method step(::?CLASS:D:
+        Str:D $challenge = '',
+        --> Str:D
+    ) {
+        $!mechanism.step-client($!session, $challenge);
+    }
 }
 
 role Mechanism::Server does Mechanism {

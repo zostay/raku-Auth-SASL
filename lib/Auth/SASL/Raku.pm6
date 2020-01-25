@@ -4,45 +4,34 @@ use Auth::SASL::Factory;
 
 unit class Auth::SASL::Raku does Auth::SASL::Factory;
 
-use Auth::SASL::API;
 use Auth::SASL::Mechanism;
-use Auth::SASL::Raku::Mechanism;
 
-constant $SECURITY-FLAGS = <noplaintext noanonymous nodictionary>.Set;
+sub DEFAULT-MECHANISMS {
+    require Auth::SASL::Raku::Plain;
+    require Auth::SASL::Raku::Anonymous;
 
-proto method new-client(|) { * }
+    (
+        Auth::SASL::Raku::Plain.new,
+        Auth::SASL::Raku::Anonymous.new,
+    )
+}
 
-multi method new-client(
-    Auth::SASL::API:D $parent,
-    Str :$service = '',
-    Str :$host = '',
-    Set :$security-flags = Set.new,
+has Auth::SASL::Mechanism @.supported-mechanisms = DEFAULT-MECHANISMS();
+
+method new-client(::?CLASS:D:
+    Mixy:D $mechanism,
     --> Auth::SASL::Mechanism:D
 ) {
     my $last-err;
 
-    my $mech-pkgs = gather for $parent.mechanism.keys -> $mech {
-        my $mech-pkg = $?PACKAGE.^name ~ "::$mech";
-
-        try require ::($mech-pkg);
-        if ::($mech-pkg) ~~ Failure {
-            $last-err = ::($mech-pkg);
-            next;
-        }
-
-        (::($mech-pkg) ~~ Auth::SASL::Mechanism::Client) or next;
-        (::($mech-pkg) ~~ Auth::SASL::Raku::Mechanism) or next;
-        (::($mech-pkg).HOW ~~ Metamodel::ClassHOW) or next;
-        if $security-flags {
-            ::($mech-pkg).matching-security-flags($security-flags);
-        }
-
-        take ::($mech-pkg);
+    for @!supported-mechanisms.sort({ $mechanism{ $_ } }) -> $mech {
+        next unless $mech.mechanism ∈ $mechanism;
+        return $mech;
     }
 
-    die "No working SASL authentication mechanisms found: $last-err.exception()"
-        unless $mech-pkgs;
-
-    $mech-pkgs.first.new(:$parent, :$service, :$host, :need-step);
+    die X::Auth::SASL::NotFound.new(:$mechanism);
 }
 
+method list-mechanisms(::?CLASS:D: --> Seq:D) {
+    @!supported-mechanisms».mechanism;
+}

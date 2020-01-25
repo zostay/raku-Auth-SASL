@@ -8,55 +8,81 @@ class X::Auth::SASL::Property {
     }
 }
 
-role Auth::SASL::Session { ... }
+class Auth::SASL::Session::State { ... }
 
 role Auth::SASL::Session {
-    class State {
-        has Auth::SASL::Session $.parent;
-        has %!state;
-
-        method state(Str:D $var) is rw {
-            return-rw %!state{ $var };
-        }
-
-        method clear() {
-            %!state = ();
-        }
-
-        method get-property(Str:D $name --> Str:D) {
-            $!parent.get-property($name);
-        }
-    }
-
     has %!mechanism-state;
 
     method mechanism-state(
         Str:D $mechanism,
         Str:D :$service = '',
         Str:D :$host = '',
-        --> State:D
+        --> Auth::SASL::Session::State:D
     ) {
         %!mechanism-state{ $service }{ $host }{ $mechanism } //=
-            State.new(parent => self);
+            Auth::SASL::Session::State.new(
+                parent => self,
+                :$service,
+                :$host,
+            );
     }
 
-    method session-property(Str:D $ --> Str) { ... }
+    method session-property(
+        Str:D $,
+        Str:D :$service,
+        Str:D :$host,
+        --> Str
+    ) { ... }
 
-    multi method get-property(Str:D $name --> Str:D) {
-        with self.session-property($name) {
+    multi method get-property(
+        Str:D $name,
+        Str:D :$service = '',
+        Str:D :$host = '',
+        --> Str:D
+    ) {
+        with self.session-property($name, :$service, :$host) {
             return $_;
         }
         else {
-            die X::Auth::SASL::Property.new(:property($name));
+            die X::Auth::SASL::Property.new(:property($name), :$service, :$host);
         }
     }
 
-    multi method get-property(Str:D @names --> Str:D) {
-        for @names -> $name (
-            return $_ with self.session-property($name);
+    multi method get-property(
+        @names,
+        Str:D :$service = '',
+        Str:D :$host = '',
+        --> Str:D
+    ) {
+        for @names -> $name {
+            return $_ with self.session-property($name, :$service, :$host);
         }
 
-        die X::Auth::SASL::Property.new(:property(@names[0]));
+        die X::Auth::SASL::Property.new(:property(@names[0], :$service, :$host));
+    }
+}
+
+class Auth::SASL::Session::State {
+    has Str $.service;
+    has Str $.host;
+    has Auth::SASL::Session $.parent;
+    has %!state;
+
+    method state(Str:D $var, :$default) is rw {
+        %!state{ $var } //= $default with $default;
+        return-rw %!state{ $var };
+    }
+
+    method clear() {
+        %!state = ();
+    }
+
+    multi method get-property(Str:D $name --> Str:D) {
+        $!parent.get-property($name, :$!service, :$!host);
+    }
+
+    multi method get-property(@names --> Str:D) {
+        $!parent.get-property(@names, :$!service, :$!host);
     }
 }
 
@@ -64,12 +90,12 @@ class Auth::SASL::Session::Standard does Auth::SASL::Session {
     has %.data;
     has &.callback;
 
-    method session-property(Str:D $name --> Str) {
+    method session-property(Str:D $name, Str:D :$service, Str:D :$host --> Str) {
         if %.data.{ $name }:exists {
             %.data.{ $name };
         }
         orwith &.callback {
-            .( $name );
+            .( $name, :$service, :$host );
         }
         else {
             Nil;
