@@ -32,7 +32,7 @@ method new-client(::?CLASS:D:
     die X::Auth::SASL::NotFound.new(:$mechanism);
 }
 
-method list-mechanisms(::?CLASS:D: --> Seq:D) {
+method client-mechanisms(::?CLASS:D: --> Seq:D) {
     @!supported-mechanisms».mechanism;
 }
 
