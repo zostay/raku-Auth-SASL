@@ -1,43 +1,43 @@
 {
-  "version": "0.1.0",
-  "authors": [
-    "Sterling Hanenkamp <hanenkamp@cpan.org>"
+  "depends": [
+    
   ],
   "perl": "6.c",
+  "description": "Simple Authentication and Security Layer",
+  "auth": null,
+  "provides": {
+    "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",
+    "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
+    "Auth::SASL::Raku::Mechanism": "lib/Auth/SASL/Raku/Mechanism.pm6",
+    "Auth::SASL::Session": "lib/Auth/SASL/Session.pm6",
+    "Auth::SASL": "lib/Auth/SASL.pm6",
+    "Auth::SASL::Raku::Plain": "lib/Auth/SASL/Raku/Plain.pm6",
+    "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
+    "X::Auth::SASL": "lib/X/Auth/SASL.pm6",
+    "Auth::SASL::Raku::Anonymous": "lib/Auth/SASL/Raku/Anonymous.pm6"
+  },
   "resources": [
     
   ],
+  "name": "Auth::SASL",
+  "authors": [
+    "Sterling Hanenkamp <hanenkamp@cpan.org>"
+  ],
+  "meta-version": "0",
   "test-depends": [
     "Test",
     "Test::META"
   ],
-  "tags": [
-    
-  ],
-  "provides": {
-    "Auth::SASL::Mechanism": "lib/Auth/SASL/Mechanism.pm6",
-    "X::Auth::SASL": "lib/X/Auth/SASL.pm6",
-    "Auth::SASL::Raku": "lib/Auth/SASL/Raku.pm6",
-    "Auth::SASL::Factory": "lib/Auth/SASL/Factory.pm6",
-    "Auth::SASL": "lib/Auth/SASL.pm6",
-    "Auth::SASL::Raku::Mechanism": "lib/Auth/SASL/Raku/Mechanism.pm6",
-    "Auth::SASL::Raku::Plain": "lib/Auth/SASL/Raku/Plain.pm6",
-    "Auth::SASL::Session": "lib/Auth/SASL/Session.pm6",
-    "Auth::SASL::Raku::Anonymous": "lib/Auth/SASL/Raku/Anonymous.pm6"
-  },
-  "auth": null,
-  "license": "Artistic-2.0",
   "support": {
     "source": null
   },
-  "description": "Simple Authentication and Security Layer",
   "build-depends": [
     
   ],
-  "source-url": "git://github.com/zostay/raku-Auth-SASL.git",
-  "meta-version": "0",
-  "depends": [
+  "license": "Artistic-2.0",
+  "tags": [
     
   ],
-  "name": "Auth::SASL"
+  "version": "0.1.1",
+  "source-url": "git://github.com/zostay/raku-Auth-SASL.git"
 }
