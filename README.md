@@ -38,6 +38,10 @@ SYNOPSIS
 
     my ($response-code, $challenge);
     MECHANISM: for $sasl.attempt-mechanisms($mechanisms, :service<smtp>, :host<localhost>) {
+        $smtp.print("AUTH $_.mechanism\n");
+        ($response-code, $challenge) = $smtp.get.split(' ', 2);
+        next MECHANISM unless $response-code eq '334';
+
         $challenge = '';
         repeat {
             $smtp.print(encode-base64(.step($challenge), :str) ~ "\n");
@@ -106,6 +110,14 @@ method end-session
     method end-session(Auth::SASL:D:)
 
 Clears the session. The front-end will not work until a new session is started by calling [.begin-session](#method begin-session).
+
+method supports-client-mechanisms
+---------------------------------
+
+    multi method supports-client-mechanisms(Auth::SASL:D: Str:D $mechanisms --> Bool:D)
+    multi method supports-client-mechanisms(Auth::SASL:D: Mixy:D $mechanisms --> Bool:D)
+
+Returns a `True` value if at least one of the mechanisms listed in `$mechanisms` is supported by the current, `False` otherwise.
 
 method attempt-mechanisms
 -------------------------
