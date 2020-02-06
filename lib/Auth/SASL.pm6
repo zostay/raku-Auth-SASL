@@ -29,6 +29,22 @@ method end-session(::?CLASS:D:) {
     $!session = Nil;
 }
 
+multi method supports-client-mechanisms(::?CLASS:D:
+    Str:D $mechanisms
+    --> Bool:D
+) {
+    self.supports-client-mechanisms(
+        split-mechanisms($mechanisms),
+    );
+}
+
+multi method supports-client-mechanisms(::?CLASS:D:
+    Mix:D $mechanisms
+    --> Bool:D
+) {
+    ?($!factory.client-mechanisms.Set ∩ $mechanisms)
+}
+
 multi method attempt-mechanisms(::?CLASS:D:
     Str:D $mechanisms,
     Str:D :$service = '',
@@ -131,6 +147,10 @@ Auth::SASL - Simple Authentication Security Layer
 
     my ($response-code, $challenge);
     MECHANISM: for $sasl.attempt-mechanisms($mechanisms, :service<smtp>, :host<localhost>) {
+        $smtp.print("AUTH $_.mechanism\n");
+        ($response-code, $challenge) = $smtp.get.split(' ', 2);
+        next MECHANISM unless $response-code eq '334';
+
         $challenge = '';
         repeat {
             $smtp.print(encode-base64(.step($challenge), :str) ~ "\n");
@@ -194,6 +214,13 @@ Finally, you can provide an object implementing L<Auth::SASL::Session>.
     method end-session(Auth::SASL:D:)
 
 Clears the session. The front-end will not work until a new session is started by calling L<.begin-session|#method begin-session>.
+
+=head2 method supports-client-mechanisms
+
+    multi method supports-client-mechanisms(Auth::SASL:D: Str:D $mechanisms --> Bool:D)
+    multi method supports-client-mechanisms(Auth::SASL:D: Mixy:D $mechanisms --> Bool:D)
+
+Returns a C<True> value if at least one of the mechanisms listed in C<$mechanisms> is supported by the current, C<False> otherwise.
 
 =head2 method attempt-mechanisms
 

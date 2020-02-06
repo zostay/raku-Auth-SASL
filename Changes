@@ -1,6 +1,10 @@
 {{$NEXT}}
 
+    * Added the supports-client-mechanisms method.
+
 v0.1.0	2020-01-24
+
+    * Complete rewrite. Almost like a new initial release.
 
 v0.0.1	2020-01-10
 

@@ -33,7 +33,7 @@ method new-client(::?CLASS:D:
 }
 
 method client-mechanisms(::?CLASS:D: --> Seq:D) {
-    @!supported-mechanisms».mechanism;
+    @!supported-mechanisms.map(*.mechanism);
 }
 
 =begin pod
