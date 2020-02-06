@@ -1,4 +1,4 @@
-{{$NEXT}}
+v0.1.1	2020-02-05
 
     * Added the supports-client-mechanisms method.
 
